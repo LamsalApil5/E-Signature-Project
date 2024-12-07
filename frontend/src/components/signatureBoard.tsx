@@ -1,3 +1,5 @@
+"use client"; // Add this line at the top
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,12 +22,10 @@ export function SignatureBoard() {
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        // Get the position of the mouse relative to the canvas
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        // Start a new path from the mouse position
         ctx.beginPath();
         ctx.moveTo(x, y);
         setIsDrawing(true);
@@ -39,12 +39,10 @@ export function SignatureBoard() {
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        // Get the mouse position relative to the canvas again
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        // Draw a line to the current mouse position
         ctx.lineTo(x, y);
         ctx.stroke();
       }

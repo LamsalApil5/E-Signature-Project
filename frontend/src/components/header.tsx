@@ -16,6 +16,11 @@ export function Header() {
               </Link>
             </li>
             <li>
+              <Link href="/PromptGenerator" className="text-muted-foreground hover:text-primary">
+                Chat With AI
+              </Link>
+            </li>
+            <li>
               <Link href="/documents" className="text-muted-foreground hover:text-primary">
                 Documents
               </Link>
