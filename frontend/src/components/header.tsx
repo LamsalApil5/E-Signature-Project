@@ -19,14 +19,9 @@ export function Header() {
               <Link href="/PromptGenerator" className="text-muted-foreground hover:text-primary">
                 Chat With AI
               </Link>
-            </li>
+            </li>            
             <li>
-              <Link href="/documents" className="text-muted-foreground hover:text-primary">
-                Documents
-              </Link>
-            </li>
-            <li>
-              <Link href="/users" className="text-muted-foreground hover:text-primary">
+              <Link href="/Users" className="text-muted-foreground hover:text-primary">
                 Users
               </Link>
             </li>

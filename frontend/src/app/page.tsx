@@ -1,5 +1,4 @@
-
-import { SignatureBoard } from "../components/signatureBoard";
+import SignatureBoard from "./SignatureBoard/page";
 
 export default function Home() {
   return (

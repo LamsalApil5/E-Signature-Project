@@ -11,20 +11,35 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
-export function SignatureBoard() {
+const SignatureBoard = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [name, setName] = useState(""); // State for name input
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  // Type guard for distinguishing between MouseEvent and TouchEvent
+  const isMouseEvent = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ): e is React.MouseEvent<HTMLCanvasElement> => e.type === "mousedown" || e.type === "mousemove";
+
+  const startDrawing = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ) => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        let x, y;
+
+        if (isMouseEvent(e)) {
+          x = e.clientX - rect.left;
+          y = e.clientY - rect.top;
+        } else {
+          x = e.touches[0].clientX - rect.left;
+          y = e.touches[0].clientY - rect.top;
+        }
 
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -33,15 +48,25 @@ export function SignatureBoard() {
     }
   };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const draw = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ) => {
     if (!isDrawing) return;
+
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        let x, y;
+
+        if (isMouseEvent(e)) {
+          x = e.clientX - rect.left;
+          y = e.clientY - rect.top;
+        } else {
+          x = e.touches[0].clientX - rect.left;
+          y = e.touches[0].clientY - rect.top;
+        }
 
         ctx.lineTo(x, y);
         ctx.stroke();
@@ -63,6 +88,22 @@ export function SignatureBoard() {
     }
   };
 
+  // Adjust canvas size on window resize
+  useEffect(() => {
+    const resizeCanvas = () => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+    };
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas(); // Initial call to set the canvas size
+
+    return () => window.removeEventListener("resize", resizeCanvas); // Clean up on unmount
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8 text-center">Sign Your Document</h1>
@@ -78,7 +119,12 @@ export function SignatureBoard() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="name">Your Name</Label>
-              <Input id="name" placeholder="Enter your full name" />
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your full name"
+              />
             </div>
             <div>
               <Label>Your Signature</Label>
@@ -91,6 +137,10 @@ export function SignatureBoard() {
                   onMouseMove={draw}
                   onMouseUp={stopDrawing}
                   onMouseOut={stopDrawing}
+                  onTouchStart={startDrawing}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDrawing}
+                  onTouchCancel={stopDrawing}
                   className="border border-input rounded w-full"
                 />
                 <Button onClick={clearSignature} variant="outline" size="sm">
@@ -106,4 +156,6 @@ export function SignatureBoard() {
       </div>
     </div>
   );
-}
+};
+
+export default SignatureBoard;
