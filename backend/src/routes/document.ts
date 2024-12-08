@@ -12,7 +12,7 @@ const documentRoutes: Router = Router();
 documentRoutes.post("/create", createDocument);
 documentRoutes.get("/", getPaginatedDocuments);
 documentRoutes.get("/document", getDocumentById);
-documentRoutes.put("/:id", updateDocument);
-documentRoutes.delete("/:id", deleteDocument);
+documentRoutes.put("/update", updateDocument);
+documentRoutes.delete("/delete", deleteDocument);
 
 export default documentRoutes;
