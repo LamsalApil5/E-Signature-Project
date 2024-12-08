@@ -3,10 +3,17 @@ import { PORT } from './secrets'
 import rootRouter from './routes'
 import { PrismaClient } from '@prisma/client'
 import { errorMiddleware } from './middlewares/errors'
-import path from 'path';
+import cors from 'cors';
 
 const app:Express = express()
-
+// Allow requests from your frontend
+app.use(
+    cors({
+      origin: 'http://localhost:3000', 
+      methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+      allowedHeaders: ['Content-Type', 'Authorization'], 
+    })
+  );
 app.use(express.json())
 app.use('/api', rootRouter)
 export const prismaClient = new PrismaClient({    

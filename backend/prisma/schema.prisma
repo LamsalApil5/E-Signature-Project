@@ -11,13 +11,12 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  email     String     @unique
+  email     String   @unique
   password  String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  documents Document[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("users")
 }
@@ -25,13 +24,19 @@ model User {
 model Document {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   title     String
-  content   String
-  signature String?
-  status    String?  @default("Pending")
+  contentFile   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    String? @db.ObjectId
-  User      User?    @relation(fields: [userId], references: [id])
 
   @@map("documents")
+}
+
+model Signature {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  Name      String?
+  signatureFile String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("signatures")
 }
