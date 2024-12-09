@@ -9,9 +9,9 @@ import path from "path";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '..', 'public', 'uploads'); 
+    const uploadPath = path.join(__dirname, "..", "public", "uploads");
     if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true }); 
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
     cb(null, uploadPath); // Save files in the 'uploads' folder
   },
@@ -48,7 +48,7 @@ export const createDocument = async (
   res: Response,
   next: NextFunction
 ) => {
-  debugger
+  debugger;
   // First, handle the file upload using multer
   upload(req, res, async (err) => {
     if (err) {
@@ -93,14 +93,12 @@ export const createDocument = async (
   });
 };
 
-
-
 export const updateDocument = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { documentId } = req.params;
+  const { id } = req.query;
 
   // Handle file upload if a new file is provided
   upload(req, res, async (err) => {
@@ -125,21 +123,18 @@ export const updateDocument = async (
 
       // Fetch the existing document to update
       const existingDocument = await prismaClient.document.findUnique({
-        where: { id: documentId },
+        where: { id: id as string },
       });
 
       if (!existingDocument) {
         return next(
-          new BadRequestsException(
-            "Document not found!",
-            ErrorCodes.NOT_FOUND
-          )
+          new BadRequestsException("Document not found!", ErrorCodes.NOT_FOUND)
         );
       }
 
       // Update document
       const updatedDocument = await prismaClient.document.update({
-        where: { id: documentId },
+        where: { id: id as string },
         data: {
           title: title || existingDocument.title, // Keep existing title if not updated
           contentFile: contentFile || existingDocument.contentFile, // Keep existing file if not updated
@@ -164,12 +159,12 @@ export const deleteDocument = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { documentId } = req.params;
+  const { id } = req.query;
 
   try {
     // Fetch the document to delete
     const document = await prismaClient.document.findUnique({
-      where: { id: documentId },
+      where: { id: id as string },
     });
 
     if (!document) {
@@ -185,7 +180,7 @@ export const deleteDocument = async (
 
     // Delete the document from the database
     await prismaClient.document.delete({
-      where: { id: documentId },
+      where: { id: id as string },
     });
 
     res.status(200).json({ message: "Document deleted successfully!" });
@@ -251,7 +246,10 @@ export const getDocumentById = async (
 
   if (!id) {
     return next(
-      new BadRequestsException("ID parameter is required", ErrorCodes.MISSING_REQUIRED_FIELDS)
+      new BadRequestsException(
+        "ID parameter is required",
+        ErrorCodes.MISSING_REQUIRED_FIELDS
+      )
     );
   }
 

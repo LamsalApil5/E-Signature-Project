@@ -22,21 +22,24 @@ model User {
 }
 
 model Document {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  contentFile   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  contentFile String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Signatures  Signature[]
 
   @@map("documents")
 }
 
 model Signature {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  Name      String?
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
   signatureFile String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  documentId    String   @db.ObjectId
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  Document Document @relation(fields: [documentId], references: [id])
 
   @@map("signatures")
 }
