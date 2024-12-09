@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { BASE_URL } from '../config'; 
+import { BASE_URL } from '../config';
 
 // Define a generic type for CRUD responses
 interface ApiResponse<T> {
@@ -17,9 +17,16 @@ const apiService = async <T>(endpoint: string, method: string, data?: any): Prom
       data,
     });
 
-    return response.data;
+    // Check if response data exists and return it
+    if (!response.data || typeof response.data !== 'object') {
+      throw new Error('Invalid API response format');
+    }
+
+    return response.data;  // Ensure data exists in correct format
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'An error occurred');
+    // Enhanced error handling
+    const message = error.response?.data?.message || error.message || 'An error occurred';
+    throw new Error(message);
   }
 };
 
@@ -30,8 +37,14 @@ export const api = {
   },
 
   // Read (single item)
-  read: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
-    return apiService<T>(endpoint, 'GET');
+  get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
+    try {
+      const result = await apiService<T>(endpoint, 'GET');
+      return result; // Return the API response
+    } catch (error: any) {
+      // Handle any errors that occurred during the API request
+      throw new Error(error.message || 'Error fetching data');
+    }
   },
 
   // Update
@@ -45,8 +58,13 @@ export const api = {
   },
 
   // Read All (list)
-  readAll: async <T>(endpoint: string): Promise<ApiResponse<T[]>> => {
-    return apiService<T[]>(endpoint, 'GET');
+  list: async <T>(endpoint: string): Promise<ApiResponse<T[]>> => {
+    try {
+      const result = await apiService<T[]>(endpoint, 'GET');
+      
+      return result;
+    } catch (error: any) {
+      throw new Error(error.message || 'Error fetching list of data');
+    }
   },
-
 };

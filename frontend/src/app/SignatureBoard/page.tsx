@@ -16,7 +16,7 @@ import React, { useRef, useState, useEffect } from "react";
 const SignatureBoard = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [name, setName] = useState(""); // State for name input
+  const [title, setTitle] = useState(""); // State for name input
 
   // Type guard for distinguishing between MouseEvent and TouchEvent
   const isMouseEvent = (
@@ -118,12 +118,12 @@ const SignatureBoard = () => {
               <p className="text-muted-foreground">Document preview would appear here...</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="name">Your Name</Label>
+              <Label htmlFor="title">Title</Label>
               <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your full name"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter your title"
               />
             </div>
             <div>
