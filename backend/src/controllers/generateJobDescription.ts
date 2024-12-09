@@ -38,15 +38,15 @@ export const generateJobDescription = async (
   try {
     // Generate the job description using OpenAI's API
     const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo", // Use the ChatGPT 3.5 model
+        model: "gpt-4o-mini", 
       messages: [
         { role: "system", content: "You are a helpful assistant." },
         {
           role: "user",
-          content: `Generate a detailed job description for a role titled "${jobTitle}". It should include key responsibilities, required skills, and other relevant details for the role.`,
+          content: `Generate a detailed job description for a role titled "${jobTitle}". It should include key responsibilities, required skills, and other relevant details for the role. The description should be about 200 words long.`,
         },
       ],
-      max_tokens: 150, // Adjust token limit as needed
+      max_tokens: 300,
     });
 
     // Send the generated job description in the response
