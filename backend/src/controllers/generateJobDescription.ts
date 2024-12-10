@@ -4,6 +4,7 @@ import { UnprocessableEntity } from "../exceptions/validation";
 import { ErrorCodes } from "../exceptions/root";
 import { BadRequestsException } from "../exceptions/bad-requests";
 import { CHATGPT_KEY } from "../secrets";
+import { prismaClient } from "..";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -38,7 +39,7 @@ export const generateJobDescription = async (
   try {
     // Generate the job description using OpenAI's API
     const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini", 
+      model: "gpt-4o-mini",
       messages: [
         { role: "system", content: "You are a helpful assistant." },
         {
@@ -46,11 +47,16 @@ export const generateJobDescription = async (
           content: `Generate a detailed job description for a role titled "${jobTitle}". It should include key responsibilities, required skills, and other relevant details for the role. The description should be about 200 words long.`,
         },
       ],
-      max_tokens: 300,
+      max_tokens: 500,
     });
-
-    // Send the generated job description in the response
-    res.status(200).json({ description: response?.choices?.[0]?.message?.content?.trim() });
+    const result = response?.choices?.[0]?.message?.content?.trim();
+    const data = await prismaClient.store.create({
+      data: {
+        title: jobTitle,
+        content: result || "",
+      },
+    });
+    res.status(200).json({ description: data.content });
   } catch (error: any) {
     console.error("Error generating job description:", error);
     // Pass error to next middleware

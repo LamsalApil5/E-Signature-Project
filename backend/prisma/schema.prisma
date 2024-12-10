@@ -43,3 +43,11 @@ model Signature {
 
   @@map("signatures")
 }
+
+model store{
+   id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String?
+  content        String 
+createdAt     DateTime @default(now())
+@@map("stores")
+}
